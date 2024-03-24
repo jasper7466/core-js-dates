@@ -219,9 +219,9 @@ function getWeekNumberByDate(date) {
   const utcDate = new Date(
     Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
   );
-  const year = utcDate.getUTCFullYear();
-  const firstWeekStartDate = new Date(year, 0, 1);
-  const firstWeekDayOfTheYear = firstWeekStartDate.getUTCDay();
+  const year = utcDate.getFullYear();
+  const firstWeekStartDate = new Date(Date.UTC(year, 0, 1));
+  const firstWeekDayOfTheYear = firstWeekStartDate.getUTCDay() || 7;
 
   firstWeekStartDate.setUTCDate(
     firstWeekStartDate.getUTCDate() + firstWeekDay - firstWeekDayOfTheYear
@@ -229,7 +229,11 @@ function getWeekNumberByDate(date) {
 
   const diffDays = (utcDate - firstWeekStartDate) / 1000 / 60 / 60 / 24 + 1;
 
-  const weekNumber = Math.floor(diffDays / 7) + 1;
+  let weekNumber = Math.ceil(diffDays / 7);
+
+  if (firstWeekDayOfTheYear === 0) {
+    weekNumber += 1;
+  }
 
   return weekNumber;
 }
